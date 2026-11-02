@@ -44,3 +44,7 @@ python scripts/check_lean.py --mathlib "$LEAN_MATHLIB"
 
 The check uses the installed environment and does not install or build
 dependencies.
+
+When mathlib is a dependency of another Lake project, pass that project's
+directory with `--lake-root` or `LEAN_LAKE_ROOT`. This selects its compiled
+dependency paths while retaining the same mathlib and toolchain checks.

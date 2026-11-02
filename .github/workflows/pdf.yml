@@ -13,6 +13,7 @@ jobs:
     env:
       LEAN_NUM_THREADS: '2'
       LEAN_MATHLIB: ${{ github.workspace }}/checks/lean/.lake/packages/mathlib
+      LEAN_LAKE_ROOT: ${{ github.workspace }}/checks/lean
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
