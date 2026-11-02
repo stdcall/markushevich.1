@@ -430,7 +430,8 @@ def main():
         lint_sources()
         check_corrections()
         for tool, version in CONFIG["tool_versions"].items():
-            assert version in run([tool, "--version"]), (tool, version)
+            flag = "-V" if tool == "tinymist" else "--version"
+            assert version in run([tool, flag]), (tool, version)
         run([sys.executable, "-m", "unittest", "discover", "-s", "checks/tests"])
         run([sys.executable, "scripts/check_lsp.py"])
         if os.environ.get("LEAN_MATHLIB"):
