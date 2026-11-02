@@ -13,7 +13,10 @@ AXIOMS = re.compile(r"'([^']+)' (?:depends on axioms: \[([^\]]*)\]"
                     r"|does not depend on any axioms)")
 
 
-def check(mathlib):
+def check(mathlib, lake_root=None):
+    lake_root = lake_root or mathlib
+    assert (lake_root / "lean-toolchain").read_text().strip() == (
+        mathlib / "lean-toolchain").read_text().strip()
     manifest = json.loads((ROOT / "checks/lean-proofs.json").read_text())
     assert manifest["schema_version"] == 2
     assert (mathlib / "lean-toolchain").read_text().strip() == manifest["lean_toolchain"]
@@ -36,7 +39,7 @@ def check(mathlib):
         assert not expected & declarations
         declarations |= expected
         result = subprocess.run(
-            ["lake", "env", "lean", str(path)], cwd=mathlib,
+            ["lake", "env", "lean", str(path)], cwd=lake_root,
             capture_output=True, text=True, timeout=120,
         )
         output = result.stdout + result.stderr
@@ -56,7 +59,11 @@ def check(mathlib):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mathlib", type=Path, default=os.environ.get("LEAN_MATHLIB"))
+    parser.add_argument("--lake-root", type=Path,
+                        default=os.environ.get("LEAN_LAKE_ROOT"),
+                        help="Lake project providing the compiled dependencies")
     arguments = parser.parse_args()
     if arguments.mathlib is None:
         parser.error("Set LEAN_MATHLIB or pass --mathlib with the pinned checkout")
-    check(arguments.mathlib.expanduser().resolve())
+    check(arguments.mathlib.expanduser().resolve(),
+          arguments.lake_root.expanduser().resolve() if arguments.lake_root else None)
