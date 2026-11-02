@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "lean_toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "mathlib_commit": "a218e50f981942cba4fd060faff7cae680805062",
+  "proofs": [
+    {
+      "file": "checks/lean/Stereographic.lean",
+      "passages": [
+        "pt:stereographic-conformality"
+      ],
+      "required_olean": [
+        "Mathlib/Basic/Real/Basic.olean",
+        "Mathlib/Tactic/Ring.olean"
+      ],
+      "declarations": [
+        "Markushevich.Stereographic.numerator_certificate",
+        "Markushevich.Stereographic.numerator_inner_product",
+        "Markushevich.Stereographic.numerator_norm_sq"
+      ],
+      "source_mapping": {
+        "a,b,c": "ξ₀,η₀,ζ₀: the common point of the unit sphere",
+        "u,v,w": "ξ′,η′,ζ′: the first tangent vector",
+        "p,q,r": "ξ′₁,η′₁,ζ′₁: the second tangent vector"
+      },
+      "hypotheses": [
+        "a²+b²+c²=1 is the unit-sphere equation.",
+        "a*u+b*v+c*w=0 and a*p+b*q+c*r=0 express tangency; they follow by differentiating the sphere equation along each curve. That differentiation is not formalized here."
+      ],
+      "limitations": "Only the real polynomial numerator identity for the scalar product of projected tangent vectors, its explicit polynomial certificate, and the norm-square specialization are proved. The exclusions c≠1 and nonzero tangent speeds belong to the subsequent division and normalized-angle calculation. Differentiability, quotient derivatives, denominators, square roots, angles and the full conformality theorem are not formalized."
+    }
+  ]
+}

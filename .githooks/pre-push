@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+stage=$(python3 -c 'import json; print(json.load(open("config/project.json"))["stage"])')
+if [[ "$stage" != final ]]; then
+  echo 'Publication requires a final edition and passing checks.' >&2
+  exit 1
+fi
+while read -r _ _ remote_ref remote_revision; do
+  if [[ "$remote_ref" == refs/heads/main && ! "$remote_revision" =~ ^0+$ ]]; then
+    echo 'Push a branch and merge its pull request after the checks pass.' >&2
+    exit 1
+  fi
+done
