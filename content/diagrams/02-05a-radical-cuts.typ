@@ -8,15 +8,20 @@
   stroke: 0.45pt,
   content: (
     padding: 1.5,
-    frame: "rect",
-    fill: white,
-    stroke: none,
     wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
   ),
   mark: (fill: black, scale: 0.6, transform-shape: false),
 )
 #let point(p, body, anchor: "south") = {
-  cetz.draw.content(p, body, anchor: anchor)
+  cetz.draw.content(
+    p,
+    body,
+    anchor: anchor,
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.3,
+  )
   cetz.draw.circle(p, radius: 0.45, fill: white)
 }
 #let axes(
@@ -68,19 +73,39 @@
       line((0, 0), polar(r, 0deg), polar(r, step), stroke: 0.7pt)
     })
     line((0, 0), polar(r + 5, start + turn), stroke: (dash: "dashed"))
-    content(polar(r * 0.64, start + step / 2), if k == n { $g_n$ } else {
-      $g_(#k)$
-    })
+    content(
+      polar(r * 0.64, start + step / 2),
+      if k == n { $g_n$ } else {
+        $g_(#k)$
+      },
+      frame: "rect",
+      fill: white,
+      stroke: none,
+      padding: 0.3,
+    )
   }
-  axes((0, 0), r + 7, $u$, $v$, $(w)$, origin-label: $O$)
+  axes((0, 0), r + 7, $u$, $v$, $(w)$)
+  content(
+    polar(5, 230deg),
+    $O$,
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.25,
+  )
   axes(right, r + 7, $x$, $y$, $(z)$, plane-side: 1)
   for k in range(1, n + 1) {
     let start = phase + k * step
-    content(polar(r + 5, start + turn + step * 0.98), if k == n {
-      $d_n$
-    } else if k == n - 1 {
-      $d_(n - 1)$
-    } else { $d_(#k)$ })
+    content(
+      add(polar(r + 5, start + turn + step * 0.85), if k == 1 {
+        (-6.5, -2)
+      } else if k == 4 { (3, 0) } else { (0, 0) }),
+      if k == n {
+        $d_n$
+      } else if k == n - 1 {
+        $d_(n - 1)$
+      } else { $d_(#k)$ },
+    )
   }
   let ray-l = polar(r + 6, n * phase)
   let ray-m = polar(r + 6, n * (phase + turn))
@@ -107,53 +132,61 @@
   let current = winding-curve(15deg)
   let curve = range(181).map(i => winding-curve(i * 2deg))
   line(..curve, close: true, stroke: 0.8pt)
-  for start in (115deg, 225deg, 310deg) {
+  for start in (115deg, 310deg) {
     let arc = range(13).map(i => mul(winding-curve(start + i * 1.5deg), 1.06))
-    line(..arc, mark: (end: ">"))
+    line(..arc, mark: (end: "stealth"))
   }
   for origin in (ak, al) {
     line(origin, add(origin, (15, 0)), stroke: (dash: "dashed"))
-    line(origin, initial, mark: (end: ">"))
+    line(origin, initial, mark: if origin == ak { (end: "stealth") } else {
+      none
+    })
     line(
       origin,
       current,
       stroke: if origin == ak { (dash: "dashed") } else { 0.45pt },
-      mark: (end: ">"),
+      mark: if origin == ak { (end: "stealth") } else { none },
     )
-    cetz.angle.angle(
-      origin,
-      add(origin, (1, 0)),
-      current,
-      radius: if origin == ak { 6 } else { 5 },
-      mark: (end: ">"),
-      label: if origin == al { $phi_l$ } else { none },
-      label-radius: 145%,
-    )
+    if origin == al {
+      cetz.angle.angle(
+        origin,
+        add(origin, (1, 0)),
+        current,
+        radius: 5,
+        mark: (end: "stealth"),
+        label: $phi_l$,
+        label-radius: 145%,
+      )
+    }
     cetz.angle.angle(
       origin,
       add(origin, (1, 0)),
       initial,
       radius: if origin == ak { 12 } else { 9 },
-      mark: (end: ">"),
+      mark: (end: "stealth"),
       name: if origin == ak { "initial-k" } else { "initial-l" },
       label: if origin == ak { none } else { $phi_l^((0))$ },
       label-radius: 145%,
     )
   }
   content("initial-k.end", $phi_k^((0))$, anchor: "south-east")
-  arc(
-    ak,
-    start: 0deg,
-    delta: 360deg,
-    radius: 4,
-    anchor: "origin",
+  let current-angle = calc.atan2(
+    current.at(0) - ak.at(0),
+    current.at(1) - ak.at(1),
+  )
+  line(
+    ..range(241).map(i => add(ak, polar(
+      6,
+      (360deg + current-angle) * i / 240,
+    ))),
     stroke: (dash: "dashed"),
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
   content(add(ak, (-5, -2)), $phi_k$, anchor: "east")
-  content(add(ak, (0, -1.8)), $a_k$)
+  content(add(ak, (0, -3.2)), $a_k$)
   circle(ak, radius: 0.45, fill: white)
-  point(al, $a_l$, anchor: "north")
+  content(add(al, (0, -3.2)), $a_l$)
+  circle(al, radius: 0.45, fill: white)
   point(initial, $z_0$, anchor: "south")
   point(current, $z$, anchor: "south-west")
   content(mul(winding-curve(170deg), 0.82), $gamma$)
@@ -191,14 +224,37 @@
         line((unit, 0), (unit / k, 0), stroke: 0.9pt)
       }
       for (x, label) in endpoints.zip(($-1/k$, $-1$, $1$, $1/k$)) {
-        content((x * unit, 0), label, anchor: "north")
+        content(
+          (x * unit, if x > 0 { -1.7 } else { 0 }),
+          label,
+          anchor: "north",
+          frame: "rect",
+          fill: white,
+          stroke: none,
+          padding: 0.3,
+        )
         line((x * unit, -0.45), (x * unit, 0.45))
       }
-      content((0, 0), $O$, anchor: "north-east")
+      content(
+        (-1, -1.5),
+        $O$,
+        anchor: "north-east",
+        frame: "rect",
+        fill: white,
+        stroke: none,
+        padding: 0.18,
+      )
       content((extent + 3, 0), $x$, anchor: "north")
       content((0, 15), $y$, anchor: "east")
       content((extent * 0.8, 14), $(z)$)
-      content((extent * 0.6, 7), if alternative { $G'$ } else { $G$ })
+      content(
+        (extent * 0.6, 7),
+        if alternative { $G'$ } else { $G$ },
+        frame: "rect",
+        fill: white,
+        stroke: none,
+        padding: 0.3,
+      )
     })
   }
 })
@@ -223,13 +279,37 @@
     add(l3, (3, 12)),
     add(far, (-20, -7)),
     stroke: 0.9pt,
-    mark: (end: ">"),
+    mark: (end: "stealth"),
     name: "second-cut",
   )
   point(l1, $ell_1$, anchor: "east")
   point(l2, $ell_2$, anchor: "west")
   point(l3, $ell_3$, anchor: "north-west")
-  content("first-cut.mid", $gamma_1$, anchor: "north-west")
-  content("second-cut.mid", $gamma_2$, anchor: "north")
-  content(far, $(infinity)$, anchor: "west")
+  content(
+    "first-cut.mid",
+    $gamma_1$,
+    anchor: "north-west",
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.3,
+  )
+  content(
+    (rel: (0, -1.5), to: "second-cut.mid"),
+    $gamma_2$,
+    anchor: "north",
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.3,
+  )
+  content(
+    add(far, (2, 2)),
+    $(infinity)$,
+    anchor: "west",
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.18,
+  )
 })

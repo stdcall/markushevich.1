@@ -19,9 +19,6 @@
   stroke: 0.45pt,
   content: (
     padding: 1,
-    frame: "rect",
-    fill: white,
-    stroke: none,
     wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
   ),
   mark: (fill: black, scale: 0.65, transform-shape: false),
@@ -181,7 +178,7 @@
   )
   content("large.content", $R$, anchor: "north")
   for (p, label, anchor) in (
-    ((inner, 0), $A$, "south-west"),
+    ((inner, 1.5), $A$, "south-west"),
     ((radius, 0), $B$, "south-west"),
     ((0, radius), $C$, "south-west"),
     ((-radius, 0), $D$, "north"),
@@ -271,8 +268,21 @@
   let b = add(first, mul(vector, 0.8))
   line(add(a, normal), add(b, normal), mark: (end: "stealth"))
   line(sub(b, normal), sub(a, normal), mark: (end: "stealth"))
-  content((-outer.at(0) - 1, 0), $L$, anchor: "east")
-  content((0, -(outer.at(1) + boundary.at(1)) / 2), $G$)
+  content(
+    (-outer.at(0) - 1, 0),
+    $L$,
+    anchor: "east",
+    frame: "rect",
+    fill: white,
+    stroke: none,
+  )
+  content(
+    (0, -(outer.at(1) + boundary.at(1)) / 2),
+    $G$,
+    frame: "rect",
+    fill: white,
+    stroke: none,
+  )
 })
 
 #let contour-system() = cetz.canvas(length: 1mm, {

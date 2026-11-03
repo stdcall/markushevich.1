@@ -1,7 +1,10 @@
 #import "@preview/cetz:0.5.2"
 
-#let hatched-polygon(vertices, step: 1.4) = {
-  let offsets = vertices.map(p => p.at(1) - p.at(0))
+#let hatched-polygon(vertices, step: 1.4, slope: 1) = {
+  let offset(p) = if slope == none { p.at(0) } else {
+    p.at(1) - slope * p.at(0)
+  }
+  let offsets = vertices.map(offset)
   let first = calc.floor(calc.min(..offsets) / step)
   let last = calc.ceil(calc.max(..offsets) / step)
   for k in range(first, last + 1) {
@@ -10,8 +13,8 @@
     for i in range(vertices.len()) {
       let a = vertices.at(i)
       let b = vertices.at(calc.rem(i + 1, vertices.len()))
-      let da = a.at(1) - a.at(0)
-      let db = b.at(1) - b.at(0)
+      let da = offset(a)
+      let db = offset(b)
       if calc.abs(db - da) > 0.0001 {
         let t = (c - da) / (db - da)
         if 0 <= t and t <= 1 {
@@ -71,7 +74,7 @@
   content("x.end", $x$, anchor: "north")
   content("y.end", $y$, anchor: "east")
   content((0, 0), $0$, anchor: "north-west")
-  content((d3.first(), 50%, d3.last()), $D_3$)
+  content((d3.first(), 50%, d3.last()), box(fill: white, inset: 0.15mm)[$D_3$])
   cetz.decorations.brace(
     (d3.first().at(0), 0),
     (0, 0),
@@ -110,10 +113,14 @@
     (z0, $z_0$, "north-east"),
     (z1, $z_1$, "north"),
     (first-term, $w_(n_0)$, "north-east"),
-    (second-term, $w_(n_0+p_0)$, "north-west"),
+    (second-term, $w_(n_0+p_0)$, "north-east"),
   ) {
     circle(p, radius: 0.4, fill: white)
-    content(p, label, anchor: side)
+    content(
+      if p == second-term { (rel: (0, -10), to: p) } else { p },
+      label,
+      anchor: if p == second-term { none } else { side },
+    )
   }
   cetz.decorations.brace(
     (z0, 100% / 3, z1),
@@ -150,7 +157,7 @@
   line(origin, upper)
   line(origin, w)
   circle(w, radius: 0.4, fill: white)
-  content(w, $w$, anchor: "south")
+  content(w, box(fill: white, inset: 0.15mm)[$w$], anchor: "south")
   cetz.angle.angle(
     origin,
     w,
@@ -188,7 +195,7 @@
       b,
       direction: "cw",
       radius: 20,
-      label: $epsilon$,
+      label: box(fill: white, inset: 0.15mm)[$epsilon$],
       label-radius: 23,
       mark: (start: "stealth", end: "stealth"),
     )

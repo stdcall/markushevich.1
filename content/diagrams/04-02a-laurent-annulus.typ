@@ -40,12 +40,13 @@
     let middle = radius * 0.58
     line(origin, polar(middle - 1.6, angle))
     line(polar(middle + 1.6, angle), polar(radius, angle), mark: (
-      end: "straight",
+      end: "stealth",
+      fill: black,
     ))
     content(polar(middle, angle), label)
   }
   circle(origin, radius: 0.5, fill: white)
   content(origin, $z_0$, anchor: "west")
   content(polar(outer-prime - 2, 35deg), $Gamma_(R')$)
-  content(polar(inner-prime + 1.8, -48deg), $Gamma_(r')$)
+  content(polar(inner-prime + 3.7, -48deg), $Gamma_(r')$)
 })

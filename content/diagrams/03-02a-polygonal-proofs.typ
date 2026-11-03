@@ -28,7 +28,7 @@
   cetz.draw.line(
     add(middle, mul(unit, -length / 2)),
     add(middle, mul(unit, length / 2)),
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
 }
 #let hatch(vertices, reverse: false) = {
@@ -169,6 +169,6 @@
     (a6, $A_6$, "north"),
     (a7, $A_7$, "north-west"),
     (a7, $C$, "east"),
-    (b, $B$, "west"),
+    (add(b, (1, 1.5)), $B$, "west"),
   ) { content(point, label, anchor: anchor) }
 })

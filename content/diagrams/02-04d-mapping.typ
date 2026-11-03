@@ -21,8 +21,8 @@
   mark: (fill: black, scale: 0.65, transform-shape: false),
 )
 #let axes(xmin, xmax, ymin, ymax, xname, yname) = {
-  cetz.draw.line((xmin, 0), (xmax, 0), mark: (end: ">"))
-  cetz.draw.line((0, ymin), (0, ymax), mark: (end: ">"))
+  cetz.draw.line((xmin, 0), (xmax, 0), mark: (end: "stealth"))
+  cetz.draw.line((0, ymin), (0, ymax), mark: (end: "stealth"))
   if xname != none {
     cetz.draw.content((xmax, 0), xname, anchor: "north")
   }
@@ -30,10 +30,19 @@
     cetz.draw.content((0, ymax), yname, anchor: "east")
   }
 }
-#let open-point(p, label, anchor: "north") = {
+#let open-point(p, label, anchor: "north", label-offset: (0, 0)) = {
   cetz.draw.circle(p, radius: 0.45, fill: white)
-  cetz.draw.content(p, label, anchor: anchor)
+  cetz.draw.content(add(p, label-offset), label, anchor: anchor)
 }
+#let hatch-caption(p, body, anchor: "center") = cetz.draw.content(
+  p,
+  body,
+  anchor: anchor,
+  frame: "rect",
+  fill: white,
+  stroke: none,
+  padding: 0.18,
+)
 #let hatch(vertices, reverse: false, step: 1.3) = {
   // Pair all intersections, so nonconvex circular lunes are also filled.
   // The half-open edge convention counts a shared vertex only as needed.
@@ -77,10 +86,11 @@
   for factor in radii + (1,) { circle((0, 0), radius: r * factor) }
   for k in range(16) { line((0, 0), polar(r, k * 22.5deg)) }
   axes(-r - 4, r + 7, -r - 5, r + 10, $x$, $y$)
-  content((-1, -1), $O$, anchor: "north-east")
+  line((0, 0), (-5.1, -17.3), stroke: 0.25pt)
+  content((-6, -20), $O$)
   content((r + 3, r + 6), $(z)$)
   content(polar(r, -65deg), $gamma$, anchor: "north")
-  content(polar(0.59 * r, -15deg), $g$)
+  content(polar(0.59 * r, -11.25deg), $g$)
   for (angle, extra, gap, label) in (
     (45deg, 3, 18deg, $alpha$),
     (135deg, 6, 32deg, $pi - alpha$),
@@ -93,7 +103,7 @@
       delta: (angle - gap) / 2,
       radius: radius,
       anchor: "origin",
-      mark: (start: "<"),
+      mark: (start: "stealth"),
     )
     arc(
       (0, 0),
@@ -101,7 +111,7 @@
       delta: (angle - gap) / 2,
       radius: radius,
       anchor: "origin",
-      mark: (end: ">"),
+      mark: (end: "stealth"),
     )
     content(polar(radius, angle / 2), label)
   }
@@ -133,10 +143,10 @@
     axes(-27, 30, -26, 28, $u$, $v$)
     line((-scale, 0), (scale, 0), stroke: 0.9pt)
     for focus in (-scale, scale) { line((focus, -0.6), (focus, 0.6)) }
-    content((0, 0), $O$, anchor: "north-east")
-    content((-scale, 0), $-1$, anchor: "south")
-    content((scale, 0), $1$, anchor: "south")
-    content((1.4, -1), $Gamma$, anchor: "north-west")
+    content((-1.7, 4.8), $O$)
+    content((-scale - 2.47, 3.09), $-1$, anchor: "south")
+    content((scale + 1.77, 2.39), $1$, anchor: "south")
+    content((1.7, -4.8), $Gamma$)
     content((13, 18), $G$)
     content((23, 26), $(w)$)
   })
@@ -153,10 +163,10 @@
   axes(-24, 24, -8, 39, $x$, $y$)
   content((21, 36), $(z)$)
   open-point((0, unit * center), [])
-  open-point((-unit, 0), $-1$)
+  open-point((-unit, 0), $-1$, label-offset: (-1.5, -1.5))
   open-point((unit, 0), $1$)
   let direction = polar(1, theta)
-  line((unit, 0), add((unit, 0), mul(direction, 13)), mark: (end: ">"))
+  line((unit, 0), add((unit, 0), mul(direction, 13)), mark: (end: "stealth"))
   cetz.angle.angle(
     (unit, 0),
     (unit + 12, 0),
@@ -164,9 +174,12 @@
     radius: 7,
     label: $#sym.theta$,
     label-radius: 145%,
-    mark: (start: "<", end: ">"),
+    mark: (start: "stealth", end: "stealth"),
   )
-  content((unit * radius * 0.78, unit * (center + radius * 0.63)), $gamma$)
+  content(
+    (unit * radius * 0.78 + 2, unit * (center + radius * 0.63) + 1),
+    $gamma$,
+  )
   content((3, unit * (center - radius) - 1), $gamma$, anchor: "north")
 
   scope({
@@ -183,10 +196,10 @@
     axes(-18, 22, -11, 28, $u$, $v$)
     content((21, 26), $(w)$)
     open-point((0, unit * image-center), [])
-    open-point((-unit, 0), $-1$)
-    open-point((unit, 0), $1$)
+    open-point((-unit, 0), $-1$, label-offset: (-1.5, -2))
+    open-point((unit, 0), $1$, label-offset: (1.5, -2))
     let direction = polar(1, 2 * theta)
-    line((unit, 0), add((unit, 0), mul(direction, 14)), mark: (end: ">"))
+    line((unit, 0), add((unit, 0), mul(direction, 14)), mark: (end: "stealth"))
     cetz.angle.angle(
       (unit, 0),
       (unit + 12, 0),
@@ -194,7 +207,7 @@
       radius: 7,
       label: $2 #sym.theta$,
       label-radius: 145%,
-      mark: (start: "<", end: ">"),
+      mark: (start: "stealth", end: "stealth"),
     )
     content((3, unit * center + 1), $delta$, anchor: "south")
   })
@@ -209,19 +222,19 @@
   hatch(upper, reverse: true)
   circle((0, 0), radius: r)
   axes(-25, 27, -23, 29, $x$, $y$)
-  open-point((-r, 0), $-1$)
-  open-point((r, 0), $1$)
-  content((7, 7), $k_1$)
+  open-point((-r, 0), $-1$, label-offset: (-2.5, -1.5))
+  open-point((r, 0), $1$, label-offset: (2.5, -1.5))
+  hatch-caption((7, 7), $k_1$)
   content((7, -8), $k_2$)
-  content((20, 17), $K_2$)
+  hatch-caption((20, 17), $K_2$)
   scope({
     translate((60, 0))
     hatch(((-23, 0), (23, 0), (23, 24), (-23, 24)))
     hatch(((-23, -18), (23, -18), (23, 0), (-23, 0)))
     hatch(((-23, -18), (23, -18), (23, 0), (-23, 0)), reverse: true)
     axes(-25, 27, -23, 29, $u$, $v$)
-    content((-18, 0), $-1$, anchor: "north")
-    content((18, 0), $1$, anchor: "north")
+    hatch-caption((-18, -1), $-1$, anchor: "north")
+    hatch-caption((18, -1), $1$, anchor: "north")
     line((-23, 0), (-18, 0), stroke: 0.85pt)
     line((18, 0), (23, 0), stroke: 0.85pt)
   })
@@ -294,8 +307,10 @@
       clear
     }
   }
+  let label-ends = ()
   let sections = ()
   for level in (1, 2, 3, 4) {
+    let label-end = none
     let curves = if level == 1 {
       (-3 * calc.pi / 4, -calc.pi / 4).map(x => range(129).map(j => (
         x,
@@ -317,12 +332,22 @@
     }
     for curve in curves {
       let shown = curve.map(((x, y)) => visible(x, y, level))
+      for ((x, y), is-visible) in curve.zip(shown) {
+        if is-visible {
+          let p = project(x, y, level)
+          if label-end == none or p.at(0) < label-end.at(0) {
+            label-end = p
+          }
+        }
+      }
       for j in range(curve.len() - 1) {
         if not shown.at(j) or not shown.at(j + 1) { continue }
         let ends = curve.slice(j, j + 2)
         sections.push(ends.map(((x, y)) => project(x, y, level)))
       }
     }
+    assert(label-end != none)
+    label-ends.push((level, label-end))
   }
   // The drawing's pedestal lies below the zero of the function.
   // The front and right curtains do not alter the surface or its domain.
@@ -377,12 +402,13 @@
     anchor: "east",
   )
   content(project(xmax, 0.35, height(xmax, 0.35)), $op("cth")$, anchor: "west")
-  for level in (1, 2, 3, 4) {
-    let x = if level == 1 { -calc.pi / 4 } else { -xmax }
-    let y = if level == 1 { -0.7 } else {
-      -0.5 * calc.ln((level + 1) / (level - 1))
+  // Place each number beside its own level, outside the dense mesh.
+  for (level, endpoint) in label-ends {
+    if level == 1 {
+      content(add(project(-calc.pi / 4, ymax, 1), (0, 1)), $1$, anchor: "south")
+    } else {
+      content(add(endpoint, (-1, 0)), $#level$, anchor: "east")
     }
-    content(project(x, y, height(x, y)), $#level$, anchor: "north-east")
   }
 })
 
@@ -403,7 +429,7 @@
   axes(-10, 30, -29, 32, none, none)
   content((scale * x0, 0), $x_0$, anchor: "south-east")
   content((scale * (x0 + h), 0), $x_0 + h$, anchor: "south-west")
-  content((scale * (x0 + h / 2), 18), $g$)
+  hatch-caption((scale * (x0 + h / 2), 18), $g$)
   content((24, 29), $(z)$)
   scope({
     translate((57, 0))
@@ -422,22 +448,23 @@
     line(..second)
     axes(-4, 29, -26, 29, none, none)
     content((25, 27), $(w)$)
-    content((11, 8), $G$)
+    hatch-caption((11, 8), $G$)
     content((0, scale), $i$, anchor: "east")
     content((0, -scale), $-i$, anchor: "east")
     let origin = (0, -scale)
     let lower = add(origin, polar(13, 90deg - theta2))
     let upper = add(origin, polar(13, 90deg - theta1))
-    line(origin, lower, stroke: (dash: "dashed"), mark: (end: ">"))
-    line(origin, upper, stroke: (dash: "dashed"), mark: (end: ">"))
+    line(origin, lower, stroke: (dash: "dashed"), mark: (end: "stealth"))
+    line(origin, upper, stroke: (dash: "dashed"), mark: (end: "stealth"))
     cetz.angle.angle(
       origin,
       lower,
       upper,
       radius: 8,
-      label: $2 h$,
+      name: "lune-opening",
       label-radius: 140%,
-      mark: (start: "<", end: ">"),
+      mark: (start: "stealth", end: "stealth"),
     )
+    hatch-caption("lune-opening.label", $2 h$)
   })
 })

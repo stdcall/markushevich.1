@@ -32,8 +32,8 @@
   mark: (fill: black, scale: 0.65, transform-shape: false),
 )
 #let axes(xmin, xmax, ymin, ymax, xname, yname) = {
-  cetz.draw.line((xmin, 0), (xmax, 0), mark: (end: ">"))
-  cetz.draw.line((0, ymin), (0, ymax), mark: (end: ">"))
+  cetz.draw.line((xmin, 0), (xmax, 0), mark: (end: "stealth"))
+  cetz.draw.line((0, ymin), (0, ymax), mark: (end: "stealth"))
   cetz.draw.content((xmax, 0), xname, anchor: "north")
   cetz.draw.content((0, ymax), yname, anchor: "east")
 }
@@ -49,7 +49,7 @@
   circle(mul(z0, zscale), radius: rho * zscale)
   content(mul(z0, zscale), $z_0$, anchor: "south")
   line(mul(z0, zscale), mul(add(z0, polar(rho, 225deg)), zscale), mark: (
-    end: ">",
+    end: "stealth",
   ))
   circle(mul(z0, zscale), radius: 0.4, fill: white)
 

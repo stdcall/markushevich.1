@@ -62,6 +62,7 @@
 #let conformality-at-pole() = cetz.canvas(length: 1mm, {
   import cetz.draw: *
   set-style(..drawing-style)
+  set-style(angle: (mark: (start: "stealth", end: "stealth")))
   let unit = 12
   let pole-coordinate = (0.7, 0.7)
   let rotation = 110deg
@@ -78,8 +79,8 @@
   let zeta-plane(p) = add(right, vector-scale(reciprocal-image(p), unit))
   let w-plane(p) = add(right, vector-scale(inverse(reciprocal-image(p)), unit))
   let axes(origin) = {
-    line(add(origin, (-10, 0)), add(origin, (36, 0)), mark: (end: ">"))
-    line(add(origin, (0, -16)), add(origin, (0, 36)), mark: (end: ">"))
+    line(add(origin, (-10, 0)), add(origin, (36, 0)), mark: (end: "stealth"))
+    line(add(origin, (0, -16)), add(origin, (0, 36)), mark: (end: "stealth"))
   }
   axes((0, 0))
   axes(right)
@@ -96,14 +97,14 @@
       z-plane(end),
       z-plane(control),
       name: "gamma-" + str(index),
-      mark: (end: ">"),
+      mark: (end: "stealth"),
     )
     bezier(
       right,
       zeta-plane(end),
       zeta-plane(control),
       name: "image-" + str(index),
-      mark: (end: ">"),
+      mark: (end: "stealth"),
     )
     line(
       pole,
@@ -119,7 +120,7 @@
       let s = 0.32 + n * (0.65 - 0.32) / 100
       w-plane(curve(s, index))
     })
-    line(..samples, name: "unbounded-" + str(index), mark: (end: ">"))
+    line(..samples, name: "unbounded-" + str(index), mark: (end: "stealth"))
     content(
       (name: "gamma-" + str(index), anchor: 75%),
       if index == 0 { $gamma_1$ } else { $gamma_2$ },
@@ -136,7 +137,6 @@
       anchor: "north-west",
     )
   }
-  circle(pole, radius: 0.45, fill: white)
   content(pole, $delta$, anchor: "north")
   cetz.angle.angle(
     pole,

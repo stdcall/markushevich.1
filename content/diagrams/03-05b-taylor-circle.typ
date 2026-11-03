@@ -8,7 +8,7 @@
       padding: 1,
       wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
     ),
-    mark: (scale: 0.75, transform-shape: false),
+    mark: (scale: 0.75, transform-shape: false, fill: black),
   )
   let polar(radius, angle) = (
     radius * calc.cos(angle),
@@ -53,9 +53,9 @@
     (radius, 110deg, $rho$),
     (distance, 23deg, $Delta$),
   ) {
-    line(polar(length * 0.36, angle), (0, 0), mark: (end: "straight"))
+    line(polar(length * 0.36, angle), (0, 0), mark: (end: "stealth"))
     line(polar(length * 0.64, angle), polar(length, angle), mark: (
-      end: "straight",
+      end: "stealth",
     ))
     content(polar(length * 0.5, angle), label)
   }

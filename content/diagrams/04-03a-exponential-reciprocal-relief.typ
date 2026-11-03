@@ -81,16 +81,17 @@
         ..cross-section(front).rev(),
         close: true,
         fill: white,
-        stroke: 0.15pt + white,
+        stroke: none,
       )
+      let visible-back = calc.min(extent-y, back + (back - front) / 12)
       for height in levels {
         if height == 1 {
-          line(position(0, back, 1), position(0, front, 1))
+          line(position(0, visible-back, 1), position(0, front, 1))
         } else {
           let logarithm = calc.ln(height)
           let radius = 1 / (2 * calc.abs(logarithm))
           let start = calc.max(front, -radius)
-          let stop = calc.min(back, radius)
+          let stop = calc.min(visible-back, radius)
           if start < stop {
             for branch in (-1, 1) {
               let points = samples(
@@ -123,22 +124,32 @@
       }
       for direction in meridians {
         let sine = calc.sin(direction)
-        let cosine = calc.cos(direction)
-        let points = samples(
-          y => {
+        let cosine = if direction == 90deg { 0 } else { calc.cos(direction) }
+        let cap-radius = if cosine > 0 { cosine / calc.ln(ceiling) } else {
+          none
+        }
+        let cap-y = if cap-radius != none { cap-radius * sine } else { none }
+        let ys = range(9).map(i => front + (visible-back - front) * i / 8)
+        if cap-y != none and front <= cap-y and cap-y <= visible-back {
+          ys.push(cap-y)
+        }
+        let points = ys
+          .sorted()
+          .dedup()
+          .map(y => {
             let radius = y / sine
             let x = radius * cosine
             if radius > 0 and calc.abs(x) <= extent-x {
-              let exponent = cosine / radius
-              if exponent < calc.ln(ceiling) {
-                position(x, y, calc.exp(exponent))
-              } else { none }
+              if y == cap-y {
+                position(cap-radius * cosine, cap-y, ceiling)
+              } else {
+                let exponent = cosine / radius
+                if exponent < calc.ln(ceiling) {
+                  position(x, y, calc.exp(exponent))
+                } else { none }
+              }
             } else { none }
-          },
-          front,
-          back,
-          count: 8,
-        )
+          })
         let run = ()
         for point in points + (none,) {
           if point == none {

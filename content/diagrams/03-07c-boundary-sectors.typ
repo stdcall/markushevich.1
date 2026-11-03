@@ -104,7 +104,7 @@
     stop: 180deg,
     radius: radius * 0.58,
     anchor: "origin",
-    mark: (start: "<", end: ">"),
+    mark: (start: "stealth", end: "stealth"),
   )
   for p in ((0, 0), a, b, bp, c, cp, e, f, lower) {
     circle(times(p, radius), radius: 0.38, fill: white)
@@ -112,23 +112,36 @@
   for (p, label, anchor) in (
     (a, $A$, "west"),
     (b, $B$, "south-west"),
-    (bp, $B'$, "south-east"),
+    (plus(bp, (-2.5 / radius, 3.5 / radius)), $B'$, "south-east"),
     (cp, $C'$, "north-east"),
     (d, $D$, "east"),
-    (e, $E$, "north-east"),
+    (plus(e, (1.5 / radius, -1 / radius)), $E$, "north-east"),
     (f, $F$, "south-west"),
     ((0, 0), $O$, "north"),
   ) { content(times(p, radius), label, anchor: anchor) }
   content(
-    times(plus(c, (0, -calc.tan(wedge-angle) * (1 - middle))), radius),
+    plus(times(plus(c, (0, -calc.tan(wedge-angle) * (1 - middle))), radius), (
+      2,
+      -1,
+    )),
     $C$,
     anchor: "north",
   )
   content(
-    plus(times(a, radius), polar(radius * 0.66, 180deg - wedge-angle / 2)),
+    plus(
+      plus(times(a, radius), polar(radius * 0.66, 180deg - wedge-angle / 2)),
+      (-1.2, -1),
+    ),
     $theta$,
   )
-  content((radius * (middle + inner) / 2, -radius * 0.12), $d_theta$)
+  content(
+    (radius * (middle + inner) / 2 - 0.75, -radius * 0.12 + 0.7),
+    $d_theta$,
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.15,
+  )
 })
 
 #let fatou-sector() = cetz.canvas(length: 1mm, {
@@ -182,7 +195,7 @@
   line(
     polar(radius, dimension-angle),
     polar(radius * outer, dimension-angle),
-    mark: (start: ">", end: ">"),
+    mark: (start: "stealth", end: "stealth"),
   )
   content(
     polar(radius * (1 + outer) / 2, dimension-angle),
@@ -199,8 +212,8 @@
   content("gap.content", $rho/2$, anchor: "south-east")
   content((0, 0), $O$, anchor: "east")
   content(arc-points.first(), $zeta_1$, anchor: "north-west")
-  content(arc-points.last(), $zeta_2$, anchor: "south-east")
+  content(plus(arc-points.last(), (1.5, 1.8)), $zeta_2$, anchor: "south-east")
   content(ends.first(), $z_1$, anchor: "west")
   content(ends.last(), $z_2$, anchor: "south-west")
-  content(polar(radius - 0.7, dimension-angle), $sigma$, anchor: "east")
+  content(polar(radius - 2, dimension-angle + 8deg), $sigma$, anchor: "east")
 })

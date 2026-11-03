@@ -26,7 +26,7 @@
   cetz.draw.line(
     add(middle, mul(v, -length / 2)),
     add(middle, mul(v, length / 2)),
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
 }
 
@@ -61,8 +61,8 @@
   direction-arrow(middle, 0.67, offset: 1.5)
   direction-arrow(exit, 0.93, offset: 1.5)
   for point in (a, b, (0, 0)) { circle(point, radius: 0.42, fill: white) }
-  content(a, $A$, anchor: "west")
-  content(b, $B$, anchor: "east")
+  content(add(a, (1, 1)), $A$, anchor: "west")
+  content(add(b, (-1, -1)), $B$, anchor: "east")
   content((0, 0), $zeta_0$, anchor: "south")
   content(polar(r, -85deg), $a$, anchor: "north")
   content(polar(r, 95deg), $b$, anchor: "south")
@@ -132,7 +132,7 @@
       delta: -(opening - gap) / 2,
       radius: radius,
       anchor: "origin",
-      mark: (start: "<"),
+      mark: (start: "stealth"),
     )
     arc(
       (0, 0),
@@ -140,7 +140,7 @@
       delta: -(opening - gap) / 2,
       radius: radius,
       anchor: "origin",
-      mark: (end: ">"),
+      mark: (end: "stealth"),
     )
     content(polar(radius, normal-angle - opening / 2), label)
   }
@@ -149,10 +149,10 @@
   content(xi, $zeta$, anchor: "north-east")
   content(z, $z$, anchor: "west")
   content(a, $A$, anchor: "south-west")
-  content(add(b, mul(normal, 2.5)), $B$, anchor: "south-east")
+  content((-28.5, 2), $B$)
   content(curve(1.13), $gamma$, anchor: "north")
-  content(curve(0.63), $sigma_rho$, anchor: "north")
-  content(curve(-0.78), $sigma_rho$, anchor: "south")
+  content(add(curve(0.63), (2, -0.8)), $sigma_rho$, anchor: "north")
+  content(add(curve(-0.9), (-0.9, 1.5)), $sigma_rho$, anchor: "south")
   content(polar(r, -60deg), $a$, anchor: "north")
   content(polar(r, 110deg), $b$, anchor: "south")
   content((0.46 * r, -0.35 * r), $g_(theta,rho)$)
