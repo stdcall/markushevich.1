@@ -243,8 +243,8 @@
     ((2.4, 8.3), $O$),
     ((9.4, 5.5), $O$),
     ((5.5, 9.5), $O'$),
-    ((3.5, 7), $O'$),
-    ((11.5, 5), $O'$),
+    ((3.5, 7.45), $O'$),
+    ((11.5, 5.45), $O'$),
   ) {
     content(p, label, frame: "rect", fill: white, stroke: none)
   }
@@ -294,7 +294,14 @@
   bezier(top, endpoint, (58, 7), (73, 13))
   bezier(bottom, endpoint, (60, -19), (72, 4))
   for p in (top, bottom, endpoint) { circle(p, radius: 0.55, fill: white) }
-  content((26, 8), $overline(O)_n$)
+  content(
+    (26, 8),
+    $O_n$,
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.2,
+  )
   content((-0.2, 3.2), $Gamma_(n+1)$)
   content(sum-point(top, (1, 1.4)), $zeta_k^((n+1))$, anchor: "south-west")
   content(
@@ -414,23 +421,23 @@
   for p in starts + (endpoint,) { circle(p, radius: 0.55, fill: white) }
   for (p, label) in (
     ((11, 11), $zeta_1$),
-    ((7, -2), $zeta_2$),
-    ((-30, -10), $zeta_3$),
-    ((37.5, -2), $zeta_p$),
-    ((48, -2), $zeta_(p-1)$),
-    ((28, 6.3), $gamma_1$),
-    ((21, -4.3), $gamma_2$),
-    ((-3, -18), $gamma_3$),
-    ((40.5, 4.2), $gamma_(p-1)$),
+    ((9, -1), $zeta_2$),
+    ((-25, -14), $zeta_3$),
+    ((32.5, -2), $zeta_p$),
+    ((46.4, -3.3), $zeta_(p-1)$),
+    ((28, 10.5), $gamma_1$),
+    ((21, -6.3), $gamma_2$),
+    ((-3, -15), $gamma_3$),
     ((30, 17), $G$),
     ((-34, -7.5), $O'$),
-    ((41, 8), $O'$),
+    ((45.5, 7.5), $O'$),
     ((-8, 11), $P$),
-    ((-15, -3.5), $P$),
+    ((-13, -5), $P$),
     ((53, 8.5), $P$),
   ) {
     content(p, label)
   }
+  content((40, 7.2), $gamma_(p-1)$, anchor: "east")
 })
 
 #let runge-rectangles() = cetz.canvas(length: 42mm, {
@@ -457,16 +464,16 @@
     thickness: 0.35pt,
     dash: "dashed",
   ))
-  let arrow = (symbol: ">", fill: black)
+  let arrow = (symbol: "stealth", fill: black)
   // Long dimensions have their filled tips at the outer extension lines.
   for x in (a, 1 - a) { line((x, 1 - a), (x, 1.14), stroke: 0.3pt) }
   line((a, 1.12), (0.39, 1.12), mark: (start: arrow))
   line((0.63, 1.12), (1 - a, 1.12), mark: (end: arrow))
-  content((0.51, 1.12), $1-2/(3n)$)
+  content((0.51, 1.15), $1-2/(3n)$)
   for y in (a, 1 - a) { line((1 - a, y), (1.18, y), stroke: 0.3pt) }
   line((1.12, a), (1.12, 0.39), mark: (start: arrow))
   line((1.12, 0.63), (1.12, 1 - a), mark: (end: arrow))
-  content((1.12, 0.51), $1-2/(3n)$, angle: 90deg)
+  content((1.16, 0.51), $1-2/(3n)$, angle: 90deg)
   // Short dimensions: both heads are outside the measured interval.
   for x in (0, 1) {
     for side in (-1, 1) {
@@ -527,15 +534,15 @@
     ((0, -3.5), $0$),
     ((0, 3.5), $B_0$),
     ((0, 16), $B_1$),
-    ((18.1, 13.1), $B_1$),
-    ((20.7, 7.1), $B_2$),
+    ((33, 20), $B_1$),
+    ((35, 7), $B_2$),
     ((-27, 17), $B_2$),
   ) {
     content(p, label, frame: "rect", fill: white, stroke: none)
   }
   line((-25.3, 16), polar-point((radii.at(7) + radii.at(8)) / 2, 145deg))
   let first-end = polar-point((radii.at(3) + radii.at(4)) / 2, 45deg)
-  line(first-end, sum-point(first-end, (1, -1)))
+  line(first-end, (29, 20))
   let second-inner = polar-point(radii.at(5), 22deg)
-  line(second-inner, sum-point(second-inner, (-1, -1)))
+  line(second-inner, (32, 7))
 })

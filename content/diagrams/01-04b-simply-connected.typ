@@ -25,7 +25,7 @@
   line((0, 0), (height, height))
   content((height / 3, 0), emph[а)], anchor: "north")
 
-  hatched-polygon((vertex, upper-ray, lower-ray))
+  hatched-polygon((vertex, upper-ray, lower-ray), slope: -1)
   line(upper-ray, vertex, lower-ray)
   content((vertex, 50%, lower-ray), emph[б)], anchor: "north")
 

@@ -9,7 +9,7 @@
       padding: 1,
       wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
     ),
-    angle: (mark: (end: ">", scale: 0.6)),
+    angle: (mark: (end: "stealth", scale: 0.6)),
   )
   let origin = (0, 0)
   let center = (43, 21)

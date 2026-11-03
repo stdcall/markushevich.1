@@ -10,7 +10,7 @@
       wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
     ),
     mark: (fill: black, scale: 0.65, transform-shape: false),
-    angle: (radius: 4, mark: (end: ">")),
+    angle: (radius: 4, mark: (end: "stealth")),
   )
   let plus(a, b) = a.zip(b).map(((x, y)) => x + y)
   let times(a, factor) = a.map(x => x * factor)
@@ -105,14 +105,20 @@
     content(z, $z_#(index + 1)$, anchor: if index == 0 { "north" } else {
       "east"
     })
-    content(w, $w_#(index + 1)$, anchor: if index == 1 { "south-west" } else {
-      "north-west"
-    })
+    content(
+      if index == 1 { plus(w, (5.5, 4)) } else { w },
+      box(fill: white, inset: 0.15mm)[$w_#(index + 1)$],
+      anchor: if index == 1 { "south-west" } else { "north-west" },
+    )
   }
   let start = z-points.at(1)
   let end = plus(start, (radius * 0.5, 0))
-  line(start, end, mark: (end: ">"), name: "delta")
-  content("delta.mid", $delta$, anchor: "south")
+  line(start, end, mark: (end: "stealth"), name: "delta")
+  content(
+    "delta.mid",
+    box(fill: white, inset: 0.15mm)[$delta$],
+    anchor: "south",
+  )
   cetz.angle.angle(start, plus(start, (0, -8)), end)
 
   let mid = plus(start, (radius * 0.25, 0))
@@ -120,10 +126,10 @@
     image(start),
     image(mid),
     image(end),
-    mark: (end: ">"),
+    mark: (end: "stealth"),
     name: "Delta",
   )
-  content("Delta.end", $Delta$, anchor: "west")
+  content("Delta.end", box(fill: white, inset: 0.15mm)[$Delta$], anchor: "west")
   cetz.angle.angle(right, plus(right, times(direction, 8)), plus(right, times(
     normal,
     8,

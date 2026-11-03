@@ -123,6 +123,10 @@
     ("north", "south", "south", "north-west", "south-east"),
   ) {
     circle(p, radius: 0.45, fill: white)
-    content(p, label, anchor: anchor)
+    content(
+      if label == $B$ { add(p, (1, 1.3)) } else { p },
+      label,
+      anchor: anchor,
+    )
   }
 })

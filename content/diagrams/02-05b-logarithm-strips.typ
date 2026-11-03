@@ -1,6 +1,15 @@
 #import "@preview/cetz:0.5.2"
 #import "01-03a-sequences.typ": hatched-polygon
 
+#let hatch-caption(p, body, anchor: "center") = cetz.draw.content(
+  p,
+  body,
+  anchor: anchor,
+  frame: "rect",
+  fill: white,
+  stroke: none,
+  padding: 0.15,
+)
 #let logarithm-strips() = cetz.canvas(length: 1mm, {
   import cetz.draw: *
   set-style(
@@ -45,7 +54,7 @@
       )
     })
     if -2 <= k and k <= 2 {
-      content((right, (bottom + top) / 2), $g'_#k$, anchor: "east")
+      hatch-caption((right, (bottom + top) / 2), $g'_#k$, anchor: "east")
     }
   }
   line((point-x, low - 8), (point-x, high + 7), stroke: (
@@ -64,19 +73,21 @@
     let name = if k == 0 { $v_0 i$ } else if k > 0 {
       $(v_0 + #(2 * k) pi) i$
     } else { $(v_0 - #(-2 * k) pi) i$ }
-    content((0, y), name, anchor: if k == 0 { "south-west" } else {
-      "north-west"
-    })
+    hatch-caption(
+      (1.3, y + if k == 0 { 0.4 } else if k == 1 { -0.4 } else { -1 }),
+      name,
+      anchor: if k == 0 { "south-west" } else { "north-west" },
+    )
   }
   for k in range(-2, 3) {
     let point-y = vertical(argument0 + k * period)
     assert(boundary(k) < point-y and point-y < boundary(k + 1))
     circle((point-x, point-y), radius: 0.45, fill: white)
-    content((point-x, point-y), $w'_#k$, anchor: "north-west")
+    hatch-caption((point-x + 1.2, point-y - 0.8), $w'_#k$, anchor: "north-west")
   }
   content("u.end", $u$, anchor: "north-east")
   content("v.end", $v$, anchor: "east")
-  content((0, 0), $O$, anchor: "north-east")
+  hatch-caption((-1, -1.2), $O$, anchor: "north-east")
 
   // The lower picture is the common exponential image of all five strips.
   // Its dashed circle is the image of the vertical line Re w = u0.
@@ -121,7 +132,11 @@
   )
   content("x.end", $x$, anchor: "north-east")
   content("y.end", $y$, anchor: "east")
-  content(center, $O$, anchor: "north-east")
+  hatch-caption(
+    (center.at(0) - 1, center.at(1) - 1.2),
+    $O$,
+    anchor: "north-east",
+  )
   line(
     center,
     (
@@ -132,7 +147,11 @@
   )
   let image-point = exponential(u0, argument0)
   circle(image-point, radius: 0.45, fill: white)
-  content(image-point, $z'_0$, anchor: "west")
+  hatch-caption(
+    (image-point.at(0) + 1.5, image-point.at(1) + 1.5),
+    $z'_0$,
+    anchor: "west",
+  )
   content((center.at(0) + 20, center.at(1) + 19), $G$)
   for k in range(-2, 3) {
     let point = exponential(u0, argument0 + k * period)

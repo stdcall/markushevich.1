@@ -48,7 +48,8 @@
   import cetz.draw: *
   line(origin, add(origin, mul(sub(endpoint, origin), 0.38)))
   line(add(origin, mul(sub(endpoint, origin), 0.61)), endpoint, mark: (
-    end: "straight",
+    end: "stealth",
+    fill: black,
   ))
   content(add(origin, mul(sub(endpoint, origin), 0.5)), label)
 }
@@ -80,7 +81,7 @@
   content(a, $zeta'$, anchor: "north-east")
   content(b, $zeta''$, anchor: "north")
   content(z-prime, $z'$, anchor: "south-east")
-  content(z-double-prime, $z''$, anchor: "south")
+  content(add(z-double-prime, (3.8, 1.4)), $z''$)
   content(polar(radius * 0.55, 150deg), $K$)
   content(polar(radius + 3, 230deg), $Gamma$)
   content(polar(radius + 3.5, 315deg), $D$)
@@ -180,7 +181,15 @@
   for p in (origin, shifted, boundary-point) { point(p) }
   content(origin, $z_0$, anchor: "north-west")
   content(shifted, $z_1$, anchor: "north-west")
-  content(boundary-point, $zeta$, anchor: "north")
+  content(
+    add(boundary-point, (-1, -1)),
+    $zeta$,
+    anchor: "north",
+    frame: "rect",
+    fill: white,
+    stroke: none,
+    padding: 0.2,
+  )
   content(add(boundary-point, (0, 3)), $U_zeta$, anchor: "south")
   content(add(shifted, polar(distance * 1.13, -15deg)), $gamma$)
   content(polar(radius * 0.58, 170deg), $K$)
@@ -199,7 +208,7 @@
   circle(top, radius: unit, stroke: 0.7pt)
   circle(bottom, radius: unit, stroke: 0.7pt)
   circle(bottom, radius: unit * calc.sqrt(2), stroke: 0.7pt)
-  line(origin, (unit * 2.7, 0), mark: (end: ">", fill: black))
+  line(origin, (unit * 2.7, 0), mark: (end: "stealth", fill: black))
   line(origin, z, stroke: 0.85pt)
   line(origin, z-prime, stroke: 0.85pt)
   let angle-z = calc.atan2(z.at(0), z.at(1))
@@ -213,15 +222,17 @@
     stop: angle-z,
     radius: unit * 0.7,
     mark: (
-      start: "straight",
-      end: "straight",
+      start: "stealth",
+      fill: black,
+      end: "stealth",
     ),
   )
-  content(polar(unit, angle-z * 0.45), $op("Arg")_1 z$)
+  content(add(polar(unit, angle-z * 0.45), (0, 0.15)), $op("Arg")_1 z$)
   let spiral(t) = polar(unit * (0.32 - 0.06 * t), t * (360deg + angle-prime))
   line(..range(181).map(j => spiral(j / 180)), mark: (
-    start: (symbol: "straight", reverse: true),
-    end: (symbol: "straight", reverse: true),
+    start: (symbol: "stealth", reverse: true),
+    fill: black,
+    end: (symbol: "stealth", reverse: true),
   ))
   content((-unit * 0.3, unit * 0.08), $op("Arg")_2 z'$, anchor: "east")
   for p in (origin, one, top, bottom, z, z-prime) { point(p) }
@@ -230,7 +241,7 @@
   content(top, $z_0$, anchor: "west")
   content(bottom, $z'_0$, anchor: "west")
   content(z, $z$, anchor: "west")
-  content(z-prime, $z'$, anchor: "north-west")
+  content(add(z-prime, (1.5, 7)), $z'$, anchor: "north-west")
   content((unit * 2.7, 0), $x$, anchor: "north")
   content(add(top, polar(unit * 1.06, 15deg)), $gamma$)
   content(add(bottom, polar(unit * 1.08, -5deg)), $gamma'$)

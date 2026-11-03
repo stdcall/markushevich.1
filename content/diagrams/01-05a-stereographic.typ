@@ -158,7 +158,13 @@
         stroke: (dash: "dashed"),
       )
       line(radial(radius, direction), end, mark: (end: "stealth"))
-      content(end, label, anchor: "north-west")
+      content(
+        end,
+        if direction == 0deg { box(fill: white, inset: 0.15mm)[#label] } else {
+          label
+        },
+        anchor: "north-west",
+      )
     }
     line(north, image-point, stroke: (dash: "dashed"))
     line(image-point, plane-point)
@@ -173,9 +179,26 @@
       (image-point, $A'$, "south"),
     ) {
       point-mark(p)
-      content(p, label, anchor: anchor)
+      content(
+        p,
+        if p == plane-point { box(fill: white, inset: 0.15mm)[#label] } else {
+          label
+        },
+        anchor: if p == north { "south-west" } else if p == south {
+          "north-west"
+        } else if p == image-point {
+          "south-west"
+        } else { anchor },
+        padding: if p == north or p == south { 3.5 } else if p == image-point {
+          4
+        } else { 1.2 },
+      )
     }
-    content(radial(-1.5 * radius, azimuth), $Pi$, anchor: "south")
+    content(
+      radial(-1.5 * radius, azimuth),
+      box(fill: white, inset: 0.15mm)[$Pi$],
+      anchor: "south",
+    )
     let cap-longitude = -100deg
     let cap-latitude = 50deg
     let cap-angle = 8deg
@@ -191,8 +214,8 @@
             cap-radius * cap-radius - ordinate * ordinate,
           )
           line(
-            (-half-width, ordinate),
-            (half-width, ordinate),
+            (ordinate, -half-width),
+            (ordinate, half-width),
             stroke: 0.2pt,
           )
         }
@@ -204,7 +227,7 @@
       height: radius * calc.sin(cap-latitude),
     )
     point-mark(cap-point)
-    content(cap-point, $M'$, anchor: "south-west")
+    content(cap-point, $M$, anchor: "south", padding: 3.8)
   })
   circle((0, 0), radius: radius)
 })
@@ -245,7 +268,6 @@
       content(p, label, anchor: anchor)
     }
     content(plane-point, $z$, anchor: "north")
-    content((origin, 50%, image-point), $1$, anchor: "south-east")
     on-xy({
       cetz.angle.angle(
         origin,
@@ -255,6 +277,7 @@
         radius: 0.55 * radius,
         label: $lambda$,
         label-radius: 0.68 * radius,
+        mark: (end: "stealth"),
       )
     })
     group({
@@ -274,6 +297,7 @@
           radius: 0.27 * radius,
           name: "latitude",
           label-radius: 0.65 * radius,
+          mark: (end: "stealth"),
         )
         content("latitude.label", $phi$, anchor: "north")
         cetz.angle.angle(
@@ -287,6 +311,8 @@
         )
         cetz.decorations.brace((0, 0), north-local, name: "unit-radius")
         content("unit-radius.content", $1$, anchor: "east")
+        cetz.decorations.brace((0, 0), image-local, name: "image-radius")
+        content("image-radius.content", $1$, anchor: "south-east")
       })
     })
   })

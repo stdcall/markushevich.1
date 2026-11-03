@@ -7,7 +7,7 @@
     wrap: text.with(top-edge: "bounds", bottom-edge: "bounds"),
   ),
   mark: (scale: 0.65, transform-shape: false, fill: black),
-  angle: (mark: (start: ">", end: ">"), label-radius: 135%),
+  angle: (mark: (start: "stealth", end: "stealth"), label-radius: 135%),
 )
 
 #let add(a, b) = a.zip(b).map(((x, y)) => x + y)
@@ -24,10 +24,10 @@
 }
 #let axes(origin, left: 9, right: 34, below: 9, above: 34) = {
   cetz.draw.line(add(origin, (-left, 0)), add(origin, (right, 0)), mark: (
-    end: ">",
+    end: "stealth",
   ))
   cetz.draw.line(add(origin, (0, -below)), add(origin, (0, above)), mark: (
-    end: ">",
+    end: "stealth",
   ))
 }
 
@@ -44,7 +44,8 @@
   let unit = 27
   let image-unit = 15
   axes((0, 0), right: 43, above: 35)
-  axes(image-origin, left: 30, right: 30, above: 48)
+  let image-top = image-unit * calc.pow(ray-radius, exponent)
+  axes(image-origin, left: 30, right: 30, above: image-top + 3)
   content((30, 34), $(z)$)
   content(add(image-origin, (24, 50)), $(w)$)
   content(vertex, $a$, anchor: "north-east")
@@ -125,9 +126,9 @@
   axes(image-origin, left: 29, right: 30, below: 25, above: 34)
   line((unit * c, -13), (unit * c, 32))
   line((-12, unit * ordinate), (29, unit * ordinate))
-  line((unit * c + 1.5, -3), (unit * c + 1.5, 4), mark: (end: ">"))
+  line((unit * c + 1.5, -3), (unit * c + 1.5, 4), mark: (end: "stealth"))
   line((3, unit * ordinate + 1.5), (10, unit * ordinate + 1.5), mark: (
-    end: ">",
+    end: "stealth",
   ))
   cetz.decorations.flat-brace(
     (0, -1),
@@ -149,14 +150,14 @@
   line(
     add(image-origin, polar(26, angle-value)),
     add(image-origin, polar(32, angle-value)),
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
-  circle-arc(image-origin, radius + 1.5, 113deg, 140deg, mark: (end: ">"))
+  circle-arc(image-origin, radius + 1.5, 113deg, 140deg, mark: (end: "stealth"))
   line(
     image-origin,
     add(image-origin, polar(radius, 140deg)),
     name: "radius",
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
   content("radius.mid", $e^c$, anchor: "south")
   cetz.angle.angle(
@@ -188,8 +189,8 @@
       0.85pt
     } else { 0.5pt })
   }
-  for i in range(10) {
-    let x = -1.1 + 0.22 * i
+  for i in range(8) {
+    let x = 0.36 * (i - 2.6)
     line((unit * x, unit * lower), (unit * x, unit * upper))
   }
   for i in range(7) {
@@ -201,13 +202,13 @@
     circle-arc(image-origin, image-unit * calc.exp(x), first, last)
   }
   line((34, unit * lower), (34, unit * upper), name: "width", mark: (
-    start: ">",
-    end: ">",
+    start: "stealth",
+    end: "stealth",
   ))
-  content("width.mid", $h$, anchor: "west")
+  content((rel: (9, 0), to: "width.mid"), $h$, anchor: "west")
   line((30, 0), (30, unit * lower), name: "height", mark: (
-    start: ">",
-    end: ">",
+    start: "stealth",
+    end: "stealth",
   ))
   content("height.mid", $phi_0$, anchor: "west")
   cetz.angle.angle(
@@ -225,7 +226,13 @@
     radius: 18,
     label-radius: 100%,
   )
-  content("opening.label", $h$, anchor: "west")
+  content(
+    add(image-origin, polar(
+      image-unit * (calc.exp(0.5) + calc.exp(0.8)) / 2,
+      first + (last - first) * 2.5 / 6,
+    )),
+    $h$,
+  )
   content((-20, unit * (lower + upper) / 2), $g$, anchor: "east")
   content(add(image-origin, polar(36, 63deg)), $d$)
   content((37, 38), $(z)$)
@@ -255,7 +262,7 @@
     (1.7 * unit, (slope * 1.7 + intercept) * unit),
     name: "original",
     stroke: 0.85pt,
-    mark: (start: ">", end: ">"),
+    mark: (start: "stealth", end: "stealth"),
   )
   let cross-y = 14
   let cross-x = (cross-y / unit - intercept) / slope * unit
@@ -268,18 +275,19 @@
   )
   content("original-angle.label", $op("arc tg") a$, anchor: "west")
   let selected-direction = 45deg
-  let directions = range(9).map(i => if i == 7 { selected-direction } else {
-    (slope * (-2.7 + i * (last + 2.7) / 8) + intercept) * 1rad
-  })
-  for (i, direction) in directions.enumerate() {
-    let radius = if i == 8 { image-unit * calc.exp(last) } else { 28 }
-    line(image-origin, add(image-origin, polar(radius, direction)))
+  let directions = (15deg, 45deg, 75deg, 105deg, 135deg)
+  for direction in directions {
+    line(
+      add(image-origin, polar(28, direction + 180deg)),
+      add(image-origin, polar(28, direction)),
+    )
   }
+  line(image-origin, add(image-origin, polar(28, 345deg)))
   line(
     ..range(501).map(i => image(-7 + (last + 7) * i / 500)),
     name: "spiral",
     stroke: 0.9pt,
-    mark: (end: ">"),
+    mark: (end: "stealth"),
   )
   let t = (selected-direction / 1rad - intercept) / slope
   let p = image(t)
@@ -288,7 +296,7 @@
     13 * calc.sqrt(1 + slope * slope),
     direction + calc.atan(slope),
   ))
-  line(p, tangent, mark: (end: ">"))
+  line(p, tangent, mark: (end: "stealth"))
   cetz.angle.angle(
     p,
     add(p, polar(15, direction)),
@@ -297,7 +305,7 @@
     radius: 8,
   )
   content("image-angle.label", $op("arc tg") a$, anchor: "west")
-  content(image-origin, $O$, anchor: "south-east")
+  content(add(image-origin, polar(11, 240deg)), $O$)
   content(add(image-origin, (32, 0)), $u$, anchor: "north")
   content(add(image-origin, (0, 40)), $v$, anchor: "east")
   content((27, 39), $(z)$)
@@ -315,30 +323,31 @@
   let image-radius = 36
   axes((0, 0), left: exponent * unit + 3, right: 34, below: 5, above: 28)
   axes(image-origin, left: 14, right: 39, below: 5, above: 28)
-  for i in range(7) {
-    let angle-value = opening / exponent * i / 6
-    let radius = 51
-    let weight = if i in (0, 6) { 0.85pt } else { 0.5pt }
-    line(vertex, add(vertex, polar(radius, angle-value)), stroke: weight)
+  for i in range(8) {
+    let direction = opening / exponent * i / 7
+    let start = if i in (0, 7) { 0 } else { 0.2 }
     line(
-      image-origin,
-      add(image-origin, polar(
-        image-radius,
-        exponent * angle-value,
-      )),
-      stroke: weight,
+      add(vertex, polar(51 * start, direction)),
+      add(vertex, polar(51, direction)),
+      stroke: if i in (0, 7) { 0.85pt } else { 0.5pt },
     )
   }
-  for radius in (10, 11, 12, 13, 14) {
-    circle-arc(vertex, radius, 0deg, opening / exponent)
+  for i in range(9) {
+    let direction = opening * i / 8
+    let start = if i in (0, 8) { 0 } else { 0.2 }
+    line(
+      add(image-origin, polar(image-radius * start, direction)),
+      add(image-origin, polar(image-radius, direction)),
+      stroke: if i in (0, 8) { 0.85pt } else { 0.5pt },
+    )
   }
   cetz.angle.angle(
     image-origin,
     add(image-origin, (10, 0)),
     add(image-origin, polar(10, opening)),
     radius: 16,
-    label: $h$,
   )
+  content(add(image-origin, polar(image-radius + 4, 27deg)), $h$)
   let height = exponent * unit * calc.tan(opening / exponent)
   cetz.decorations.flat-brace(
     (1, 0),
@@ -347,8 +356,8 @@
     amplitude: 1.0,
     flip: true,
   )
-  content("height.content", $n op("tg") h/n$, anchor: "west")
-  content((0, height), $B_n$, anchor: "south-west")
+  content((-21, 17), $n op("tg") h/n$, anchor: "west")
+  content((0, height + 2), $B_n$, anchor: "south-west")
   content(vertex, $A_n$, anchor: "south-east")
   content((0, 0), $O$, anchor: "north-east")
   content(image-origin, $O$, anchor: "north-east")

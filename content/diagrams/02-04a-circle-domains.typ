@@ -17,8 +17,8 @@
   ))
   let right = (58, 0)
   let axes(origin) = {
-    line(plus(origin, (-9, 0)), plus(origin, (35, 0)), mark: (end: ">"))
-    line(plus(origin, (0, -8)), plus(origin, (0, 34)), mark: (end: ">"))
+    line(plus(origin, (-9, 0)), plus(origin, (35, 0)), mark: (end: "stealth"))
+    line(plus(origin, (0, -8)), plus(origin, (0, 34)), mark: (end: "stealth"))
   }
   axes((0, 0))
   axes(right)
@@ -57,7 +57,7 @@
     circle(point, radius: 0.5, fill: white)
     content(point, label, anchor: side)
   }
-  content("delta.mid", $delta$, anchor: "north-west")
+  content((rel: (1.2, 0), to: "delta.mid"), $delta$, anchor: "north-west")
 
   let center = plus(right, (6, 7))
   let radius = 14

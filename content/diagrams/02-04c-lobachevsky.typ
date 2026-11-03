@@ -110,7 +110,15 @@
   ),
   angle: (radius: 3),
 )
-#let angle(a, b, c, label: none, radius: 3, mark: none) = cetz.angle.angle(
+#let angle(
+  a,
+  b,
+  c,
+  label: none,
+  radius: 3,
+  mark: none,
+  name: none,
+) = cetz.angle.angle(
   p(a),
   p(add(a, mul(tangent(a, b), 0.25))),
   p(add(a, mul(tangent(a, c), 0.25))),
@@ -119,6 +127,7 @@
   label-radius: 160%,
   mark: mark,
   radius: radius,
+  name: name,
 )
 
 #let segment-transport() = cetz.canvas(length: 1mm, {
@@ -137,7 +146,7 @@
   point(original(0), $A$, anchor: "south-east")
   point(original(b1), $B$, anchor: "south")
   content(p(original(1)), $C$, anchor: "south-west")
-  point(other(0), $A'$, anchor: "north-east")
+  point(other(0), $A'$, anchor: "south-east")
   point(other(b1), $B'$, anchor: "north")
   point(other(b2), $B''$, anchor: "south")
   point((0, 0), $O$, anchor: "north-east")
@@ -179,7 +188,7 @@
   let v = polar(1, 84deg)
   let boundary = range(33).map(i => polar(1, 132deg - 48deg * i / 32))
   let region = samples(a, u) + boundary.slice(1) + samples(v, a).slice(1)
-  hatched-polygon(region.map(p), step: 1.3)
+  hatched-polygon(region.map(p), step: 1.3, slope: none)
   disk()
   for endpoint in (u, v) {
     let (first, second) = ends(a, endpoint)
@@ -190,7 +199,7 @@
   }
   geo(a, u)
   geo(a, v)
-  point(a, $A$, anchor: "north")
+  point(a, $A$, anchor: "north-west")
   point((0, 0), $O$, anchor: "north")
   content(p(geodesic-mid(a, u)), $h$, anchor: "north-east")
   content(p(geodesic-mid(a, v)), $k$, anchor: "west")
@@ -212,7 +221,7 @@
   let alpha = transform(parallel-data.bottom)
   let beta = transform(parallel-data.top)
   let boundary = range(65).map(i => polar(1, i * 360deg / 64))
-  hatched-polygon(boundary.map(p), step: 1.4)
+  hatched-polygon(boundary.map(p), step: 1.4, slope: -1)
   // Clear the cap beyond the given line, leaving its complement hatched.
   let cap = samples(alpha, beta)
   let bb = calc.atan2(beta.at(0), beta.at(1))
@@ -227,12 +236,17 @@
   // ideal endpoints lie outside the cap and it cannot meet the given line.
   let extra = polar(1, -65deg)
   assert(calc.abs(extra.at(0)) < parallel-data.top.at(0))
-  full(a, transform(extra), stroke: (dash: "dashed"))
-  point(a, $A$, anchor: "north-east")
+  full(a, transform(extra))
+  circle(p(a), radius: 0.45, fill: white)
+  content(
+    add(p(a), (-1, 0)),
+    box(fill: white, inset: 0.15mm)[$A$],
+    anchor: "north-east",
+  )
   point(alpha, $#sym.alpha$, anchor: "east")
   point(beta, $#sym.beta$, anchor: "east")
-  point((0, 0), $O$, anchor: "north-west")
-  point(transform(extra), $delta$, anchor: "south-west")
+  point((0, 0), box(fill: white, inset: 0.15mm)[$O$], anchor: "north-west")
+  point(transform(extra), $delta$, anchor: "south-east")
   let extra-ends = ends(a, transform(extra))
   point(
     extra-ends.find(x => norm(sub(x, transform(extra))) > 0.01),
@@ -264,10 +278,11 @@
   line(p(b), p(c))
   angle(a, b, c, label: $alpha$, radius: 4)
   angle(b, c, a, label: $beta$, radius: 3)
-  angle(c, a, b, label: $gamma$, radius: 3)
+  angle(c, a, b, radius: 3, name: "gamma-angle")
+  content((rel: (-0.8, 0), to: "gamma-angle.label"), $gamma$)
   point(a, $A$, anchor: "south")
-  point(b, $B$, anchor: "east")
-  point(c, $C$, anchor: "west")
+  point(b, $B$, anchor: "south-east")
+  point(c, $C$, anchor: "south-west")
   for e in (left, right) {
     point(e, if e.at(0) < 0 { $B'$ } else { $C'$ }, anchor: "north")
   }
@@ -339,9 +354,9 @@
       full(b, c)
       full(b1, c1)
       point(a, $A$, anchor: "west")
-      point(b, $B$, anchor: "south")
+      point(b, $B$, anchor: "south-west")
       point(b1, $B_1$, anchor: "north")
-      point(c, $C$, anchor: "east")
+      point(c, $C$, anchor: if crossing { "east" } else { "west" })
       point(c1, $C_1$, anchor: "west")
       content((0, -radius - 3), if crossing { [а)] } else { [б)] })
     })
@@ -361,8 +376,9 @@
   full(a, alpha)
   full(a, beta)
   full(a, b)
-  angle(a, alpha, b, radius: 3, mark: (end: ">"))
-  angle(a, b, beta, radius: 3, mark: (end: ">"))
+  let head = (symbol: "stealth", scale: 0.35)
+  angle(a, alpha, b, radius: 3, mark: (start: head, end: head))
+  angle(a, b, beta, radius: 3, mark: (start: head, end: head))
   point(a, $A$, anchor: "north-west")
   point(b, $B$, anchor: "south-east")
   point(alpha, $#sym.alpha$, anchor: "south-east")
@@ -396,7 +412,7 @@
   line(p(a), p(top))
   line(p(a), p(bottom))
   line(p(top), p(c))
-  angle(a, top, b, radius: 4, mark: (end: ">"))
+  angle(a, top, b, radius: 4, mark: (start: "stealth", end: "stealth"))
   content(p(mul(top, 0.45)), $Pi(delta)$, anchor: "south-east")
   cetz.decorations.brace(
     add(p(a), (0, -1)),
@@ -404,7 +420,12 @@
     name: "base-length",
     flip: true,
   )
-  content(add(p(mul(b, 0.9)), (0, -2.4)), $b'$, anchor: "north")
+  content(
+    add(p(mul(b, 0.9)), (-0.8, -1.7)),
+    $b'$,
+    anchor: "north",
+    padding: 0.2,
+  )
   cetz.decorations.brace(p(top), p(c), name: "radius-length")
   content("radius-length.content", $rho$, anchor: "south-west")
   content(p(a), $A'$, anchor: "south-east")
@@ -412,5 +433,5 @@
   content(p(c), $C'$, anchor: "south-west")
   content(p(top), $beta'$, anchor: "south-west")
   content(p(bottom), $alpha'$, anchor: "north-west")
-  content(p(geodesic-mid(b, bottom)), $a'$, anchor: "north-west")
+  content(add(p(geodesic-mid(b, bottom)), (1.2, 0)), $a'$, anchor: "west")
 })
