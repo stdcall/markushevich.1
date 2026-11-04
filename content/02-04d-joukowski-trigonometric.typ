@@ -118,7 +118,7 @@ $infinity$, а образом «вертикального» диаметра я
 
 Пусть теперь $0 < alpha < pi/2$. Тогда, исключая из уравнений
 @eq:joukowski-radius-parameter параметр $t$, получаем: #eq[$
-  u^2/cos^2 alpha - v^2/sin^2 alpha = 1.
+  frac(u^2, cos^2 alpha) - frac(v^2, sin^2 alpha) = 1.
 $] <eq:joukowski-hyperbola>
 Это — уравнение гиперболы с действительной полуосью $a = cos alpha$, мнимой
 полуосью $b = sin alpha$ и с фокусами $plus.minus 1$. Однако точка $w$ не
